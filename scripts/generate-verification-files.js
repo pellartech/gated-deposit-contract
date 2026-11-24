@@ -42,7 +42,10 @@ async function generateVerificationFiles() {
                 sources: {},
                 settings: {
                     optimizer: buildInfo.input.settings.optimizer,
-                    evmVersion: buildInfo.input.settings.evmVersion || "london",
+                    // Only pass an EVM version the build set explicitly. solc 0.6.11, which
+                    // compiles DepositContract, predates "london" and rejects the input.
+                    // Without the key the compiler uses its own default, as the build did.
+                    ...(buildInfo.input.settings.evmVersion ? { evmVersion: buildInfo.input.settings.evmVersion } : {}),
                     metadata: buildInfo.input.settings.metadata || {
                         bytecodeHash: "none",
                         useLiteralContent: true
